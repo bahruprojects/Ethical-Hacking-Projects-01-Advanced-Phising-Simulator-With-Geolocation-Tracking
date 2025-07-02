@@ -218,5 +218,3 @@ function submitLoginData(data) {
 MIT License © 2025 — Project by \[Alfin Bahru Rahmika Umar]
 
 ---
-
-Jika kamu ingin versi **English** atau penambahan **badge**, **GIF demo**, atau **versi Docker**, tinggal bilang aja ya!
