@@ -1,11 +1,7 @@
 # Ethical-Hacking-Projects-01-Advanced-Phising-Simulator-With-Geolocation-Tracking
-# Google Accounts Phishing Simulation
-
-Berikut adalah versi lengkap dan menyeluruh dari file `README.md` yang menjelaskan seluruh aspek dari proyek Google Apps Script kamu — termasuk fitur *Forgot Password* dan semua elemen dari frontend maupun backend.
-
 ---
 
-# 🛡️ Google Apps Script - Simulasi Login Google dengan Logging Lokasi
+# 🛡️ Google Apps Script - Google Accounts Phishing Simulation Using Geolocation Tracking.
 
 > ⚠️ **Proyek ini dibuat hanya untuk tujuan pembelajaran dan eksperimen pribadi. Jangan digunakan untuk aktivitas yang melanggar kebijakan Google atau hukum privasi.**
 
